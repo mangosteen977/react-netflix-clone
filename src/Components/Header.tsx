@@ -54,6 +54,7 @@ const Item = styled.li`
   justify-content: center;
   flex-direction: column;
   /* align-items: center; */
+  cursor: pointer;
 `;
 const Circle = styled(motion.span)`
   width: 5px;
@@ -75,16 +76,24 @@ const Search = styled.span`
   svg {
     width: 25px;
     height: 25px;
+    cursor: pointer;
   }
 `;
 
 const SearchInput = styled(motion.input)`
-  width: 150px;
-  height: 25px;
+  width: 220px;
+  height: 35px;
   //transform-orign : translation의 시작점
   transform-origin: right center;
   position: absolute;
   right: 0;
+  border: 1px solid ${(props) => props.theme.white.lighter};
+  background-color: transparent;
+  padding: 5px 10px;
+  padding-left: 40px;
+  z-index: -1;
+  color: white;
+  font-size: 16px;
 `;
 
 const logoVariants = {
@@ -155,7 +164,7 @@ function Header() {
           />
 
           <motion.svg
-            animate={{ x: searchOpen ? -150 : 0 }}
+            animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ type: "linear" }}
             fill="currentColor"
             viewBox="0 0 20 20"
