@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
 import { useRef, useState } from "react";
 
@@ -116,10 +116,30 @@ function Header() {
   const tvMatch = useMatch("tv");
   // console.log("homeMatch", homeMatch, "tvMatch", tvMatch);
   const inputRef = useRef<HTMLInputElement>(null);
+  const inputAnimation = useAnimation();
 
   const searchOpenToggle = () => {
+    // framer-motion의 useAnimation으로 Click event에서 animation trigger
+    if (searchOpen) {
+      // close 애니메이션
+      inputAnimation.start({
+        scaleX: 0,
+      });
+    } else {
+      // open 애니메이션
+      inputAnimation.start({
+        scaleX: 1,
+      });
+    }
     setSearchOpen((prev) => !prev);
     inputRef.current !== null && inputRef.current.focus();
+  };
+  const searchClose = () => {
+    console.log("234", searchOpen);
+    inputAnimation.start({
+      scaleX: 0,
+    });
+    setSearchOpen(false);
   };
   return (
     <Nav>
@@ -157,10 +177,12 @@ function Header() {
         <Search>
           <SearchInput
             ref={inputRef}
-            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            animate={inputAnimation}
+            initial={{ scaleX: 0 }}
+            // animate={{ scaleX: searchOpen ? 1 : 0 }}
             transition={{ type: "linear" }}
             placeholder="Search for movie or tv show..."
-            onBlur={() => setSearchOpen(false)}
+            onBlur={searchClose}
           />
 
           <motion.svg
