@@ -1,9 +1,14 @@
 import styled from "styled-components";
-import { motion, useAnimation } from "framer-motion";
+import {
+  motion,
+  useAnimation,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   width: 100%;
   height: 80px;
   padding: 20px 60px;
@@ -12,7 +17,7 @@ const Nav = styled.nav`
   align-items: center;
   position: fixed;
   // 스크롤 : transparent => black
-  background-color: #000000;
+  // background-color: #000000;
   color: #fff;
   top: 0;
   font-size: 14px;
@@ -109,6 +114,13 @@ const logoVariants = {
   },
 };
 
+const navVariants = {
+  up: { backgroundColor: "rgba(0,0,0,0)" },
+  scroll: {
+    backgroundColor: "rgba(0,0,0,1)",
+  },
+};
+
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   //useRouteMatch(v5) => useMatch(v6)
@@ -117,7 +129,8 @@ function Header() {
   // console.log("homeMatch", homeMatch, "tvMatch", tvMatch);
   const inputRef = useRef<HTMLInputElement>(null);
   const inputAnimation = useAnimation();
-
+  const navAnimation = useAnimation();
+  const { scrollY } = useScroll();
   const searchOpenToggle = () => {
     // framer-motion의 useAnimation으로 Click event에서 animation trigger
     if (searchOpen) {
@@ -125,6 +138,7 @@ function Header() {
       inputAnimation.start({
         scaleX: 0,
       });
+      // (사실상 blur event(searchClose)에서 처리되기 때문에 if문에 안들어옴)
     } else {
       // open 애니메이션
       inputAnimation.start({
@@ -135,14 +149,28 @@ function Header() {
     inputRef.current !== null && inputRef.current.focus();
   };
   const searchClose = () => {
-    console.log("234", searchOpen);
     inputAnimation.start({
       scaleX: 0,
     });
     setSearchOpen(false);
   };
+
+  useMotionValueEvent(scrollY, "change", (y) => {
+    if (y > 80) {
+      // navAnimation.start({
+      //   backgroundColor: "rgba(0,0,0,1)",
+      // });
+      navAnimation.start("scroll"); //navVariants
+    } else {
+      // navAnimation.start({
+      //   backgroundColor: "rgba(0,0,0,0)",
+      // });
+      navAnimation.start("up");
+    }
+  });
+
   return (
-    <Nav>
+    <Nav variants={navVariants} initial="up" animate={navAnimation}>
       <Col>
         <Logo
           variants={logoVariants}
