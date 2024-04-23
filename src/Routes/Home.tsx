@@ -34,7 +34,7 @@ const Title = styled.h2`
 `;
 
 const Overview = styled.p`
-  font-size: 25px;
+  font-size: 23px;
   width: 50%;
 `;
 
@@ -57,6 +57,25 @@ const Box = styled(motion.div)<{ $bgPhoto: string }>`
   background-position: center center;
   height: 200px;
   font-size: 70px;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
+`;
+
+const BoxInfo = styled(motion.div)`
+  width: 100%;
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  position: relative;
+  bottom: -100%;
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
 `;
 
 const rowVariants = {
@@ -67,6 +86,21 @@ const rowVariants = {
   exit: { x: -window.outerWidth },
 };
 
+const BoxVariants = {
+  normal: { scale: 1, type: "tween" },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    type: "tween",
+    transition: { delay: 0.3 },
+  },
+};
+
+const boxInfoVariants = {
+  hover: {
+    opacity: 1,
+  },
+};
 const offset = 6;
 
 function Home() {
@@ -120,8 +154,15 @@ function Home() {
                   .map((movie) => (
                     <Box
                       key={movie.id}
-                      $bgPhoto={makeImagePath(movie.poster_path || "")}
-                    />
+                      variants={BoxVariants}
+                      whileHover="hover"
+                      initial="normal"
+                      $bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                    >
+                      <BoxInfo variants={boxInfoVariants}>
+                        <h4>{movie.title}</h4>
+                      </BoxInfo>
+                    </Box>
                   ))}
               </Row>
             </AnimatePresence>
