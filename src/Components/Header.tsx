@@ -6,7 +6,7 @@ import {
   useScroll,
 } from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const Nav = styled(motion.nav)`
   width: 100%;
@@ -121,10 +121,14 @@ const navVariants = {
   },
 };
 
+interface ISearchForm {
+  keyword: string;
+}
+
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   //useRouteMatch(v5) => useMatch(v6)
-  const homeMatch = useMatch("/");
+  const homeMatch = useMatch("/*");
   const tvMatch = useMatch("tv");
   // console.log("homeMatch", homeMatch, "tvMatch", tvMatch);
   const inputRef = useRef<HTMLInputElement>(null);
