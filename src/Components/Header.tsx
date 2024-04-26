@@ -5,8 +5,9 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
   width: 100%;
@@ -73,7 +74,7 @@ const Circle = styled(motion.span)`
   bottom: -5px;
 `;
 
-const Search = styled.span`
+const Search = styled.form`
   color: white;
   display: flex;
   align-items: center;
@@ -131,10 +132,18 @@ function Header() {
   const homeMatch = useMatch("/*");
   const tvMatch = useMatch("tv");
   // console.log("homeMatch", homeMatch, "tvMatch", tvMatch);
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
   const inputAnimation = useAnimation();
   const navAnimation = useAnimation();
   const { scrollY } = useScroll();
+  // search
+  const navigate = useNavigate();
+  const { register, handleSubmit, setValue, setFocus } = useForm<ISearchForm>();
+  const onValidSearch = (data: ISearchForm) => {
+    navigate(`/search?keyword=${data.keyword}`);
+    setValue("keyword", "");
+  };
+  // toggle search
   const searchOpenToggle = () => {
     // framer-motion의 useAnimation으로 Click event에서 animation trigger
     if (searchOpen) {
@@ -150,7 +159,8 @@ function Header() {
       });
     }
     setSearchOpen((prev) => !prev);
-    inputRef.current !== null && inputRef.current.focus();
+    setFocus("keyword");
+    // inputRef.current !== null && inputRef.current.focus();
   };
   const searchClose = () => {
     inputAnimation.start({
@@ -172,7 +182,6 @@ function Header() {
       navAnimation.start("up");
     }
   });
-
   return (
     <Nav variants={navVariants} initial="up" animate={navAnimation}>
       <Col>
@@ -206,9 +215,11 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onSubmit={handleSubmit(onValidSearch)}>
           <SearchInput
-            ref={inputRef}
+            {...register("keyword", { required: true, minLength: 1 })}
+            // ref={inputRef}
+            type="text"
             animate={inputAnimation}
             initial={{ scaleX: 0 }}
             // animate={{ scaleX: searchOpen ? 1 : 0 }}
@@ -216,7 +227,6 @@ function Header() {
             placeholder="Search for movie or tv show..."
             onBlur={searchClose}
           />
-
           <motion.svg
             animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ type: "linear" }}

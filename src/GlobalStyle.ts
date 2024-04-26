@@ -63,5 +63,8 @@ const GlobalStyle = createGlobalStyle`
     text-decoration : none;
     color : inherit;
   }
+  ::-webkit-scrollbar {
+  display: none;
+  }
 `;
 export default GlobalStyle;

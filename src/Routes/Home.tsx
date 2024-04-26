@@ -184,7 +184,7 @@ function Home() {
     data?.results.find(
       (movie) => movie.id === Number(boxMovieMatch.params.movieId)
     );
-  console.log("clickedMovie", clickedMovie);
+  // console.log("clickedMovie", clickedMovie);
   return (
     <Wrapper>
       {isLoading ? (
